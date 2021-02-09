@@ -2,6 +2,7 @@ import numpy as np
 import subprocess
 import os
 import matplotlib.pyplot as plt
+import math
 
 # D = 30
 # d = 29
@@ -11,12 +12,13 @@ import matplotlib.pyplot as plt
 # num_seg = 100
 # sigma_limit = 0.2
 
+
 D = 9
-d = 4
-N = 80
-r = 0.2
+d = 8
+N = 1000
+r = 0.9
 M = int(r * N / (1 - r))
-num_seg = 200
+num_seg = 20
 sigma_limit = 0.2
 
 
@@ -43,9 +45,9 @@ sigma = np.linspace(0, sigma_limit, num_seg)
 
 if filename == fileOpt1:
     fig = plt.figure(figsize=(10, 8))
-    plt.plot(sigma, np.arccos(data['cos_phi_PSGD.ty'])*57.3, 'r', linewidth=3)
-    plt.plot(sigma, np.arccos(data['cos_phi_REAPER.ty'])*57.3, 'g', linewidth=3)
-    plt.plot(sigma, np.arccos(data['cos_phi_GGD.ty'])*57.3, 'k', linewidth=3)
+    plt.plot(sigma, np.arccos(data['cos_phi_PSGD.ty'])*180/math.pi, 'r', linewidth=3)
+    plt.plot(sigma, np.arccos(data['cos_phi_REAPER.ty'])*180/math.pi, 'g', linewidth=3)
+    plt.plot(sigma, np.arccos(data['cos_phi_GGD.ty'])*180/math.pi, 'k', linewidth=3)
     plt.xlabel(r'$\sigma$', fontsize=15)
     plt.ylabel(r'$(\phi_*)$', fontsize=15)
     plt.legend(['PSGD', 'REAPER', 'GGD'], fontsize=15)

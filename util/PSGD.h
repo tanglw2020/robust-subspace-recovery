@@ -32,8 +32,9 @@ void DPCP_PSGM(const input_PSGD& in, output_PSGD& out) {
     const double mu_min      = 1e-15;
     const double mu_0        = 1e-2;
     const int maxiter        = 200;
-    const double alpha       = 1e-3;
+    const double alpha       = 1e-5;
     const double beta        = 0.5;
+    const int D              = (*in.X).n_rows;
 
     cx_vec eigval;
     cx_mat eigvec;
@@ -50,9 +51,24 @@ void DPCP_PSGM(const input_PSGD& in, output_PSGD& out) {
     double grad_norm_square;
     vec b_next, grad;
     int i = 0;
+    vec tmp, tmp2, s;
+    uvec inds;
+    mat Y, T, partial;
+    // while ( i <= maxiter) {
     while (mu > mu_min && i <= maxiter) {
         i++;
-        grad = (*in.X) * sign((*in.X).t() * b);
+        grad = (*in.X) * sign((*in.X).t() * b); // + (*in.X) * ((*in.X).t() * b) * 0.1;
+
+        // norm2 
+        // tmp =sqrt(sum(square((*in.X).t() * b), 1));
+        // inds = find(tmp > 0);
+        // Y = (*in.X).cols(inds);
+        // tmp2 = tmp.rows(inds);
+        // T = sqrt(repmat(tmp2, 1, D));
+        // partial = (Y / T.t()) * (Y.t() / T) * b;
+        // grad = partial;
+
+        //
         if (!in.minimize) {
             grad = -grad;
         }
@@ -70,10 +86,17 @@ void DPCP_PSGM(const input_PSGD& in, output_PSGD& out) {
             b_next = b - mu * grad;
             b_next /= norm(b_next);
         }
+
+        // if(i%5) mu *= beta;
+
+
         b = b_next;
         in_obj.b = &b;
+
         obj_old = obj(in_obj);
     }
+
+    cout<< "ite:" << i << endl;
 
     out.b_star = b;
     out.optimum = (in.minimize == true) ? obj_old : -obj_old;
