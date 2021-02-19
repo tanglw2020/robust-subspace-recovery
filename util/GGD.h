@@ -42,7 +42,7 @@ void GGD_solver(const input_GGD& in, output_GGD& out) {
     input_obj_GGD in_obj;
     const double mu_min      = 1e-15;
     const double mu_0        = 1e-3;
-    const double tol         = 1e-7;
+    const double tol         = 1e-9;
     const int maxiter        = 200;
     const double alpha       = 1e-3;
     const double beta        = 0.5;
@@ -58,6 +58,9 @@ void GGD_solver(const input_GGD& in, output_GGD& out) {
     uvec indices = sort_index(lambda, "descend");
     V = V.cols(indices);
     V = V.cols(0, d-1);
+
+    // V = randn<mat>(D, d);
+    // V = normalise(V);
 
     in_obj.X        = in.X;
     in_obj.V        = &V;
@@ -95,10 +98,15 @@ void GGD_solver(const input_GGD& in, output_GGD& out) {
         do {
             if (mu <= mu_min)
                 break;
-            // V_next = V*W*diagmat(cos(s*mu))*W.t() + U*diagmat(sin(s*mu))*W.t();
-            V_next = V*W*diagmat(cos(s*mu)) + U*diagmat(sin(s*mu));
-            V_next = normalise(V_next);
+
+            V_next = V*W*diagmat(cos(s*mu))*W.t() + U*diagmat(sin(s*mu))*W.t();
+
+            // V_next = V*W*diagmat(cos(s*mu)) + U*diagmat(sin(s*mu));
+            // V_next = normalise(V_next);
+
             // V_next = V - mu*grad;
+            // V_next = normalise(V_next);
+
             in_obj.V = &V_next;
             // if (obj(in_obj) <= obj_old - alpha * mu * grad_norm_square)
             if (obj(in_obj) < obj_old)
