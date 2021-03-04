@@ -1,6 +1,8 @@
 #include "../util/GGD.h"
-#include "../util/PSGD.h"
+#include "../util/PSGD_PSGM.h"
+#include "../util/PSGD_IRLS.h"
 #include "../util/REAPER.h"
+
 #include <armadillo>
 #include <cstdlib>
 #include <iostream>
@@ -65,6 +67,8 @@ int main(int argc, const char **argv) {
   vec cos_phi_PSGD = zeros<vec>(num_seg);
   vec cos_phi_REAPER = zeros<vec>(num_seg);
   vec cos_phi_GGD = zeros<vec>(num_seg);
+  vec cos_phi_PSGD_IRLS = zeros<vec>(num_seg);
+  vec cos_phi_PSGD_IRLS_c1 = zeros<vec>(num_seg);
   mat noise, Xtilde_noise, Y;
 
   input_PSGD in_PSGD;
@@ -73,6 +77,8 @@ int main(int argc, const char **argv) {
   output_IRLS out_IRLS;
   input_GGD in_GGD;
   output_GGD out_GGD;
+  input_IRLS_PSGD in_IRLS_PSGD;
+  output_IRLS_PSGD out_IRLS_PSGD;
   timer.tic();
   for (int i = 0; i < num_seg; ++i) {
       float rt = ratios(i);
@@ -99,7 +105,14 @@ int main(int argc, const char **argv) {
     in_IRLS.X = &Xtilde_noise;
     in_IRLS.d = d;
     IRLS_REAPER_solver(in_IRLS, out_IRLS);
-    cos_phi_REAPER[i] = norm(out_IRLS.B_star.rows(0, d - 1));
+    cos_phi_REAPER[i] = norm(out_IRLS.B_star.rows(0, d - 1))/ out_IRLS.B_star.n_cols;
+
+    mat B = out_IRLS.B_star.rows(0, d - 1);
+    B = sum(B % B, 0);
+    // cout<< B.n_cols<< " "<< out_IRLS.B_star.n_cols << endl;
+    cos_phi_REAPER[i] = B.max();
+
+    // (out_IRLS.B_star.t()*out_IRLS.B_star).print();
   }
   cout << timer.toc() << endl;
 
@@ -115,15 +128,62 @@ int main(int argc, const char **argv) {
     in_GGD.d = d;
     GGD_solver(in_GGD, out_GGD);
     Y = null((out_GGD.V).t());
-    cos_phi_GGD[i] = norm(Y.rows(0, d - 1));
+
+    mat B = Y.rows(0, d - 1);
+    B = sum(B % B, 0);
+    // cout<< B.n_cols<< " "<< B.n_rows << endl;
+    cos_phi_GGD[i] = B.max();
+
+    // cos_phi_GGD[i] = norm(Y.rows(0, d - 1))/ Y.n_cols;
+    // cos_phi_GGD[i] = norm(out_GGD.V.rows(0, d - 1))/ out_GGD.V.n_cols;
+    // (out_GGD.V.t()*out_GGD.V).print();
+
   }
   cout << timer.toc() << endl;
+
+  timer.tic();
+  for (int i = 0; i < num_seg; ++i) {
+      float rt = ratios(i);
+      int M_cur = ceil(rt * N / (1 - rt));
+      mat O_cur = randn<mat>(D, M_cur);
+      noise = sigma_limit * randn<mat>(D, N);
+      Xtilde_noise = join_horiz(X+noise, O_cur);
+
+      in_IRLS_PSGD.X = &Xtilde_noise;
+      in_IRLS_PSGD.d = d;
+      IRLS_PSGD_solver(in_IRLS_PSGD, out_IRLS_PSGD);
+      // mat B = out_IRLS_PSGD.B_star.rows(0, d - 1);
+      mat B = out_IRLS_PSGD.U.cols(d, D-1);
+      B = B.rows(0, d - 1);
+      B = sum(B % B, 0);
+      B = sort(B);
+      cos_phi_PSGD_IRLS[i] = B.max();
+
+      in_IRLS_PSGD.X = &Xtilde_noise;
+      in_IRLS_PSGD.d = D-1;
+      IRLS_PSGD_solver(in_IRLS_PSGD, out_IRLS_PSGD);
+      // B = out_IRLS_PSGD.B_star.rows(0, d - 1);
+      B = out_IRLS_PSGD.U.cols(d, D-1);
+      B = B.rows(0, d - 1);
+      B = sum(B % B, 0);
+      B = sort(B);
+      cos_phi_PSGD_IRLS_c1[i] = B.max();
+
+      // cos_phi_PSGD_IRLS[i] = norm(out_IRLS_PSGD.B_star.rows(0, d - 1))/ out_IRLS_PSGD.B_star.n_cols;
+      // (out_IRLS_PSGD.B_star.t()*out_IRLS_PSGD.B_star).print();
+      // (out_IRLS_PSGD.B_star).print();
+
+  }
+  cout << timer.toc() << endl;
+
 
   cout << "Data generated... Time elapsed " << timer.toc() << "s." << endl;
 
   cos_phi_REAPER.save("./files/cos_phi_REAPER.ty", raw_ascii);
   cos_phi_PSGD.save("./files/cos_phi_PSGD.ty", raw_ascii);
   cos_phi_GGD.save("./files/cos_phi_GGD.ty", raw_ascii);
+  cos_phi_PSGD_IRLS.save("./files/cos_phi_PSGD_IRLS.ty", raw_ascii);
+  cos_phi_PSGD_IRLS_c1.save("./files/cos_phi_PSGD_IRLS_c1.ty", raw_ascii);
 
   cout << "Done!" << endl;
 

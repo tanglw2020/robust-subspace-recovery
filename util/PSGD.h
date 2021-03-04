@@ -43,7 +43,7 @@ void DPCP_PSGM(const input_PSGD& in, output_PSGD& out) {
     const double mu_min      = 1e-15;
     const double tol         = 1e-10;
     const double mu_0        = 1e-2;
-    const int maxiter        = 200;
+    const int maxiter        = 400;
     const double alpha       = 1e-5;
     const double beta        = 0.5;
     const int D              = (*in.X).n_rows;

@@ -95,7 +95,7 @@ void IRLS_REAPER_solver(const input_IRLS& in, output_IRLS& out) {
     const int D = (*in.X).n_rows;
     const int L = (*in.X).n_cols;
     const double delta = 1e-10;
-    const double epsilon = 1e-10;
+    const double epsilon = 1e-8;
     const int maxiter = 200;
     double alpha_old = datum::inf;
     vec beta = ones<vec>(L);
@@ -128,7 +128,7 @@ void IRLS_REAPER_solver(const input_IRLS& in, output_IRLS& out) {
     svd(U,s,V, outWLS.P_star);
 
     // out.B_star = U.cols(in.d, D-1);
-    out.B_star = U.col(D-1);
+    out.B_star = U.cols(in.d, D-1);
 }
 
 

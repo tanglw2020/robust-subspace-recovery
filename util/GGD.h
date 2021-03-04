@@ -21,6 +21,7 @@ typedef struct {
 
 double obj(const input_obj_GGD& in) {
     vec tmp = sum(square((eye<mat>(in.D, in.D) - (*in.V) * (*in.V).t()) * (*in.X)), 0).t();
+    // vec tmp = sum(square((*in.V) * (*in.V).t() * (*in.X)), 0).t();
     return sum(sqrt(tmp));
 }
 
@@ -43,7 +44,7 @@ void GGD_solver(const input_GGD& in, output_GGD& out) {
     const double mu_min      = 1e-15;
     const double mu_0        = 1e-3;
     const double tol         = 1e-9;
-    const int maxiter        = 200;
+    const int maxiter        = 100;
     const double alpha       = 1e-3;
     const double beta        = 0.5;
     const int D              = (*in.X).n_rows;
@@ -58,6 +59,7 @@ void GGD_solver(const input_GGD& in, output_GGD& out) {
     uvec indices = sort_index(lambda, "descend");
     V = V.cols(indices);
     V = V.cols(0, d-1);
+    // V = V.cols(d, D-1);
 
     // V = randn<mat>(D, d);
     // V = normalise(V);
@@ -79,6 +81,7 @@ void GGD_solver(const input_GGD& in, output_GGD& out) {
     while (seq_dist > tol && i <= maxiter) {
         i++;
         QV = eye<mat>(D, D) - V * V.t();
+        // QV = V * V.t();
         tmp = sqrt(sum(square(QV * (*in.X)), 0).t());
         ind = find(tmp > 0);
         Y = (*in.X).cols(ind);
