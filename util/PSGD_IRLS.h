@@ -53,7 +53,7 @@ void IRLS_PSGD_solver(const input_IRLS_PSGD& in, output_IRLS_PSGD& out) {
     const int L = (*in.X).n_cols;
     const double delta = 1e-10;
     const double epsilon = 1e-8;
-    const int maxiter = 200;
+    const int maxiter = 300;
     double alpha_old = datum::inf;
     vec beta = ones<vec>(L);
 
@@ -72,7 +72,8 @@ void IRLS_PSGD_solver(const input_IRLS_PSGD& in, output_IRLS_PSGD& out) {
         temp1 = outWLS.V.t() * (*in.X);
         temp1 = (sqrt(sum(temp1 % temp1, 0)));
         temp2 = temp1.t();
-        beta = 1 / max(delta*ones<vec>(L), temp2);
+        // beta = 1 / max(delta*ones<vec>(L), (temp2 % sqrt(sqrt(temp2))));
+        beta = 1 / max(delta*ones<vec>(L), (temp2 % ((temp2))));
         alpha_new = sum(temp2);
         if (alpha_new >= alpha_old - epsilon || i++ > maxiter) {
             break;
@@ -80,10 +81,6 @@ void IRLS_PSGD_solver(const input_IRLS_PSGD& in, output_IRLS_PSGD& out) {
         alpha_old = alpha_new;
     }
     cout<< "ite:" << i << endl;
-
-    // mat U, V;
-    // vec s;
-    // svd(U,s,V, outWLS.P_star);
 
     // out.B_star = U.cols(0, D - in.d-1);
     out.B_star = outWLS.V;

@@ -73,7 +73,8 @@ void DPCP_PSGM(const input_PSGD& in, output_PSGD& out) {
     while (seq_dist > tol && i <= maxiter) {
     // while (mu > mu_min && i <= maxiter) {
         i++;
-        grad = (*in.X) * sign((*in.X).t() * b); // + (*in.X) * ((*in.X).t() * b) * 0.1;
+        grad = (eye<mat>(D, D) - b*b.t())*(*in.X) * sign((*in.X).t() * b); // + (*in.X) * ((*in.X).t() * b) * 0.1;
+
 
         // norm2 
         // tmp =sqrt(sum(square((*in.X).t() * b), 1));

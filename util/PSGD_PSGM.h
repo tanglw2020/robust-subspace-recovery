@@ -43,7 +43,7 @@ void DPCP_PSGM(const input_PSGD& in, output_PSGD& out) {
     const double mu_min      = 1e-15;
     const double tol         = 1e-10;
     const double mu_0        = 1e-2;
-    const int maxiter        = 400;
+    const int maxiter        = 100;
     const double alpha       = 1e-5;
     const double beta        = 0.5;
     const int D              = (*in.X).n_rows;
@@ -74,15 +74,7 @@ void DPCP_PSGM(const input_PSGD& in, output_PSGD& out) {
     // while (mu > mu_min && i <= maxiter) {
         i++;
         grad = (*in.X) * sign((*in.X).t() * b); // + (*in.X) * ((*in.X).t() * b) * 0.1;
-
-        // norm2 
-        // tmp =sqrt(sum(square((*in.X).t() * b), 1));
-        // inds = find(tmp > 0);
-        // Y = (*in.X).cols(inds);
-        // tmp2 = tmp.rows(inds);
-        // T = sqrt(repmat(tmp2, 1, D));
-        // partial = (Y / T.t()) * (Y.t() / T) * b;
-        // grad = partial;
+        // grad = (eye<mat>(D, D) - b*b.t()) *(*in.X) * sign((*in.X).t() * b); // + (*in.X) * ((*in.X).t() * b) * 0.1;
 
         //
         if (!in.minimize) {

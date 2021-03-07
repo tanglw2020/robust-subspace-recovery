@@ -159,15 +159,15 @@ int main(int argc, const char **argv) {
       B = sort(B);
       cos_phi_PSGD_IRLS[i] = B.max();
 
-      in_IRLS_PSGD.X = &Xtilde_noise;
-      in_IRLS_PSGD.d = D-1;
-      IRLS_PSGD_solver(in_IRLS_PSGD, out_IRLS_PSGD);
-      // B = out_IRLS_PSGD.B_star.rows(0, d - 1);
-      B = out_IRLS_PSGD.U.cols(d, D-1);
-      B = B.rows(0, d - 1);
-      B = sum(B % B, 0);
-      B = sort(B);
-      cos_phi_PSGD_IRLS_c1[i] = B.max();
+      // in_IRLS_PSGD.X = &Xtilde_noise;
+      // in_IRLS_PSGD.d = D-1;
+      // IRLS_PSGD_solver(in_IRLS_PSGD, out_IRLS_PSGD);
+      // // B = out_IRLS_PSGD.B_star.rows(0, d - 1);
+      // B = out_IRLS_PSGD.U.cols(d, D-1);
+      // B = B.rows(0, d - 1);
+      // B = sum(B % B, 0);
+      // B = sort(B);
+      // cos_phi_PSGD_IRLS_c1[i] = B.max();
 
       // cos_phi_PSGD_IRLS[i] = norm(out_IRLS_PSGD.B_star.rows(0, d - 1))/ out_IRLS_PSGD.B_star.n_cols;
       // (out_IRLS_PSGD.B_star.t()*out_IRLS_PSGD.B_star).print();
