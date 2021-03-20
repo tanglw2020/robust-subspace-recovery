@@ -121,7 +121,7 @@ void IRLS_REAPER_solver(const input_IRLS& in, output_IRLS& out) {
         }
         alpha_old = alpha_new;
     }
-    cout<< "ite:" << i << endl;
+    // cout<< "ite:" << i << endl;
 
     mat U, V;
     vec s;

@@ -73,8 +73,8 @@ void DPCP_PSGM(const input_PSGD& in, output_PSGD& out) {
     while (seq_dist > tol && i <= maxiter) {
     // while (mu > mu_min && i <= maxiter) {
         i++;
-        grad = (*in.X) * sign((*in.X).t() * b); // + (*in.X) * ((*in.X).t() * b) * 0.1;
-        // grad = (eye<mat>(D, D) - b*b.t()) *(*in.X) * sign((*in.X).t() * b); // + (*in.X) * ((*in.X).t() * b) * 0.1;
+        // grad = (*in.X) * sign((*in.X).t() * b); // + (*in.X) * ((*in.X).t() * b) * 0.1;
+        grad = (eye<mat>(D, D) - b*b.t()) *(*in.X) * sign((*in.X).t() * b); // + (*in.X) * ((*in.X).t() * b) * 0.1;
 
         //
         if (!in.minimize) {
@@ -104,7 +104,7 @@ void DPCP_PSGM(const input_PSGD& in, output_PSGD& out) {
         obj_old = obj(in_obj);
     }
 
-    cout<< "ite:" << i << endl;
+    // cout<< "ite:" << i << endl;
     // b.t().print();
 
     out.b_star = b;

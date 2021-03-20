@@ -6,3 +6,4 @@
 - accelarate FMS using sequence info
 - small sample
 - unkown d
+- failure criteria at practice

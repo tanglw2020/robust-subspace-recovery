@@ -124,7 +124,7 @@ void GGD_solver(const input_GGD& in, output_GGD& out) {
         obj_old = obj(in_obj);
     }
 
-    cout<< "ite:" << i << endl;
+    // cout<< "ite:" << i << endl;
 
     out.V = V;
 }

@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 import math
 
 
-D = 30
-d = 29
-N = 1000
-r = 0.8
+D = 4
+d = 3
+N = 40
+r = 0.6
 M = int(r * N / (1 - r))
-num_seg = 15
-sigma_limit = 0.2
+num_seg = 40
+sigma_limit = 0.04
 
 
 if not os.path.isdir("./files"):
@@ -40,18 +40,19 @@ sigma = np.linspace(0, sigma_limit, num_seg)
 ratios = np.linspace(0, r, num_seg)
 
 if filename == fileOpt1:
-    fig = plt.figure(figsize=(10, 8))
-    plt.plot(ratios, np.arccos(data['cos_phi_PSGD.ty'])*180/math.pi, 'r', linewidth=3)
-    plt.plot(ratios, np.arccos(data['cos_phi_REAPER.ty'])*180/math.pi, 'g', linewidth=3)
-    plt.plot(ratios, np.arccos(data['cos_phi_GGD.ty'])*180/math.pi, 'k', linewidth=3)
-    plt.plot(ratios, np.arccos(data['cos_phi_PSGD_IRLS.ty'])*180/math.pi, 'y', linewidth=3)
+    fig = plt.figure(figsize=(18, 8))
+    plt.plot(ratios, np.log(90 - np.arccos(data['cos_phi_PSGD.ty'])*180/math.pi), 'r', linewidth=3)
+    plt.plot(ratios, np.log(90 -np.arccos(data['cos_phi_REAPER.ty'])*180/math.pi), 'g', linewidth=3)
+    plt.plot(ratios, np.log(90 -np.arccos(data['cos_phi_GGD.ty'])*180/math.pi), 'k', linewidth=3)
+    plt.plot(ratios, np.log(90 -np.arccos(data['cos_phi_PSGD_IRLS.ty'])*180/math.pi), 'y', linewidth=3)
+
     # plt.plot(ratios, np.arccos(data['cos_phi_PSGD_IRLS_c1.ty'])*180/math.pi, 'c', linewidth=3)
     plt.xlabel(r'$ratios$', fontsize=15)
     plt.ylabel(r'$(\phi_*)$', fontsize=15)
     # plt.legend(['PSGD', 'REAPER', 'GGD','PSGD_IRLS', 'PSGD_IRLS_c1'], fontsize=15)
-    plt.legend(['PSGD', 'REAPER', 'GGD','PSGD_IRLS'], fontsize=15)
+    plt.legend(['PSGD', 'FMS', 'GGD','PSGD_IRLS'], fontsize=15)
 
-    plt.xticks(ratios, fontsize=15)
+    # plt.xticks(ratios, fontsize=15)
     # plt.yticks([85, 86, 87, 88,89, 90], fontsize=15)
 
     fig.savefig("foo.pdf", bbox_inches='tight')

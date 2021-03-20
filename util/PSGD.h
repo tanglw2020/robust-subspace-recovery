@@ -113,7 +113,7 @@ void DPCP_PSGM(const input_PSGD& in, output_PSGD& out) {
         obj_old = obj(in_obj);
     }
 
-    cout<< "ite:" << i << endl;
+    // cout<< "ite:" << i << endl;
     // b.t().print();
 
     out.b_star = b;
