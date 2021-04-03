@@ -7,18 +7,18 @@ import math
 
 D = 4
 d = 3
-N = 140
-r = 0.65
+N = 40
+r = 0.5
 M = int(r * N / (1 - r))
 num_seg = 40
-sigma_limit = 0.04
+sigma_limit = 0.01
 n_step = 2
 
 
 if not os.path.isdir("./files"):
     os.system('mkdir files')
-# subprocess.call(['/bin/bash', '-i', '-c', 'g++ -std=c++11 -I /home/tanglw/Downloads/armadillo-10.2.1/include/ -DARMA_DONT_USE_WRAPPER  compare_PSGD_REAPER_GGD_N_M.cpp -O2 -o comp_N_M -lopenblas '])
-os.system('./comp_N_M -D %d -d %d -N %d -r %f -num %d -sig %f' % (D, d, N, r, num_seg, sigma_limit))
+# subprocess.call(['/bin/bash', '-i', '-c', 'g++ -std=c++11 -I /home/tanglw/Downloads/armadillo-10.2.1/include/ -DARMA_DONT_USE_WRAPPER  compare_PSGD_REAPER_GGD_repeat_N.cpp -O2 -o comp_N_repeat -lopenblas '])
+os.system('./comp_N_repeat -D %d -d %d -N %d -r %f -num %d -sig %f' % (D, d, N, r, num_seg, sigma_limit))
 
 # fileOpt1 = ['cos_phi_PSGD.ty', 'cos_phi_REAPER.ty', 'cos_phi_GGD.ty', 
         # 'cos_phi_PSGD_IRLS.ty', 'cos_phi_PSGD_IRLS_c1.ty']
@@ -49,7 +49,7 @@ if filename == fileOpt1:
     plt.plot(Ns, np.log(90 -np.arccos(data['cos_phi_PSGD_IRLS.ty'])*180/math.pi), 'y', linewidth=3)
 
     # plt.plot(ratios, np.arccos(data['cos_phi_PSGD_IRLS_c1.ty'])*180/math.pi, 'c', linewidth=3)
-    plt.xlabel(r'$ratios$', fontsize=15)
+    plt.xlabel(r'$N$', fontsize=15)
     plt.ylabel(r'$log(\phi_*)$', fontsize=15)
     # plt.legend(['PSGD', 'REAPER', 'GGD','PSGD_IRLS', 'PSGD_IRLS_c1'], fontsize=15)
     plt.legend(['PSGD', 'FMS', 'GGD','PSGD_IRLS'], fontsize=15)
@@ -57,6 +57,6 @@ if filename == fileOpt1:
     # plt.xticks(ratios, fontsize=15)
     # plt.yticks([85, 86, 87, 88,89, 90], fontsize=15)
 
-    fig.savefig("foo.pdf", bbox_inches='tight')
+    fig.savefig("D{}_d{}_r{}_N{}.pdf".format(D,d,r,N), bbox_inches='tight')
 
 plt.show()

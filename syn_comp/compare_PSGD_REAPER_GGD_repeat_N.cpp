@@ -240,7 +240,7 @@ int main(int argc, const char **argv) {
     // B = sum(B % B, 0);
     // // cout<< B.n_cols<< " "<< B.n_rows << endl;
     // cos_phi_GGD[i] = B.max();
-    repeat_run_GGD(N+ n_step*i, r, D, d, sigma_limit, 20, cos_phi_GGD[i]);
+    repeat_run_GGD(N+ n_step*i, r, D, d, sigma_limit, 400, cos_phi_GGD[i]);
 
 
     // cos_phi_GGD[i] = norm(Y.rows(0, d - 1))/ Y.n_cols;
