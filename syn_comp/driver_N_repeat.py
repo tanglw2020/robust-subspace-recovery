@@ -5,14 +5,14 @@ import matplotlib.pyplot as plt
 import math
 
 
-D = 4
-d = 3
-N = 40
-r = 0.5
+D = 30
+d = D-1
+N = D*4
+r = 0.2
 M = int(r * N / (1 - r))
-num_seg = 40
-sigma_limit = 0.01
-n_step = 2
+num_seg = 12
+sigma_limit = 0.04
+n_step = 4
 
 
 if not os.path.isdir("./files"):
@@ -57,6 +57,6 @@ if filename == fileOpt1:
     # plt.xticks(ratios, fontsize=15)
     # plt.yticks([85, 86, 87, 88,89, 90], fontsize=15)
 
-    fig.savefig("D{}_d{}_r{}_N{}.pdf".format(D,d,r,N), bbox_inches='tight')
+    fig.savefig("D{}_d{}_r{}_N{}_sig{}.pdf".format(D,d,r,N, sigma_limit), bbox_inches='tight')
 
 plt.show()
